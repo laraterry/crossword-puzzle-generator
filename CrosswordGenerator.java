@@ -81,12 +81,47 @@ public class CrosswordGenerator{
         }
     }
 
+    public void tryPlacingWord(String word, boolean horizontal){
+        for (int index = 0; index < word.length(); index++){
+            for (int i = 0; i < grid.length; i ++){
+                for (int j = 0; j < grid.length; j++){
+                    if (grid[i][j] == word.charAt(index)){
+                        if (horizontal) {
+                            int row = i;
+                            int col = j - index;
+                            if (canPlaceWord(word, row, col, horizontal)) {
+                                placeWord(word, row, col, horizontal);
+                                return; 
+                            }
+                        } else {
+                            int row = i - index;
+                            int col = j;
+                            if (canPlaceWord(word, row, col, horizontal)) {
+                                placeWord(word, row, col, horizontal);
+                                return; // stop after placing
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
+
+        System.out.println("Could not place word: " + word);
+
+
+    }
+
     public static void main(String[] args) {
         CrosswordGenerator generator = new CrosswordGenerator();
-        generator.initializeGrid(10); // or 15 for a larger grid
+        generator.initializeGrid(10);
         generator.placeFirstWord("HELLO");
+        generator.tryPlacingWord("OLE", false);    // Should cross at 'L' or 'O'
+        generator.tryPlacingWord("HELP", true);    // Try another horizontal word
+        generator.tryPlacingWord("EEL", false);    // Try vertical again
         generator.printGrid();
     }
+    
 
 }
 
